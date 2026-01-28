@@ -5,122 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live do Paquetá - Acompanhe o Voo</title>
     <style>
-        /* Reset e Base */
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
-            margin: 0;
-            padding: 0;
             background-color: #000;
             color: #fff;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* Área do Vídeo (Esquerda) */
+        /* Layout Principal */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            padding-bottom: 50px; /* Espaço para o rodapé */
+            padding: 20px;
+            overflow-y: auto;
+            padding-top: 80px;
         }
 
-        /* Header Rubro-Negro */
+        /* Título no Corpo */
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #d32f2f;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 10px rgba(211, 47, 47, 0.5);
+        }
+
+        /* Header de Status */
         .live-header {
             width: 100%;
-            padding: 12px 20px;
+            padding: 12px 0;
             background: linear-gradient(90deg, #b91212 0%, #000000 100%);
             border-bottom: 2px solid #b91212;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             display: flex;
+            justify-content: center;
             align-items: center;
             z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .live-indicator {
             background-color: #ff0000;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 4px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 12px;
             margin-right: 15px;
             animation: pulse 1.5s infinite;
-            letter-spacing: 1px;
         }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        .viewers-count {
-            font-size: 16px;
-            font-weight: 500;
-            color: #ddd;
-        }
-
         /* Container do Vídeo */
         .video-container {
             position: relative;
-            width: 90%;
-            max-width: 850px;
+            width: 100%;
+            max-width: 800px;
             aspect-ratio: 16 / 9;
-            box-shadow: 0 0 40px rgba(185, 18, 18, 0.3);
-            background: #000;
+            box-shadow: 0 0 30px rgba(185, 18, 18, 0.4);
+            border: 1px solid #222;
         }
 
-        /* Esconder título do YouTube */
         .video-mask {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background: black;
-            z-index: 5;
-            pointer-events: none;
+            top: 0; left: 0; width: 100%; height: 50px;
+            background: black; z-index: 5; pointer-events: none;
         }
 
-        iframe.video-player {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        iframe.video-player { width: 100%; height: 100%; border: none; }
 
         /* Botões de Compartilhamento */
         .share-row {
-            margin-top: 30px;
+            margin: 25px 0;
             display: flex;
-            gap: 15px;
-            z-index: 10;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .share-btn {
-            padding: 10px 22px;
-            border-radius: 50px;
+            padding: 12px 20px;
+            border-radius: 8px;
             text-decoration: none;
             color: white;
             font-weight: bold;
             font-size: 14px;
             transition: 0.3s;
-            display: flex;
-            align-items: center;
         }
 
         .btn-wa { background-color: #25d366; }
         .btn-tg { background-color: #0088cc; }
-        .share-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        /* Barra Lateral (Chat) */
+        /* Barra Lateral de Chat (Desktop) */
         .chat-sidebar {
-            width: 350px;
-            height: 100%;
-            background-color: #0a0a0a;
-            border-left: 2px solid #222;
+            width: 380px;
+            background-color: #050505;
+            border-left: 2px solid #b91212;
             display: flex;
             flex-direction: column;
         }
@@ -128,73 +118,91 @@
         .chat-label {
             padding: 15px;
             background: #111;
-            color: #b91212;
-            font-weight: bold;
+            color: #fff;
             text-align: center;
+            font-size: 13px;
+            font-weight: bold;
             border-bottom: 1px solid #222;
-            font-size: 14px;
-            letter-spacing: 1px;
         }
 
-        /* Responsividade para Celular */
-        @media (max-width: 950px) {
-            body { flex-direction: column; overflow-y: auto; height: auto; }
-            .chat-sidebar { width: 100%; height: 500px; border-left: none; border-top: 2px solid #222; }
-            .main-content { height: 100vh; padding-top: 60px; }
+        /* AJUSTES MOBILE */
+        @media (max-width: 850px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+                height: auto;
+            }
+
+            .main-content {
+                padding-top: 70px;
+                height: auto;
+                overflow-y: visible;
+            }
+
+            .main-title {
+                font-size: 1.8rem;
+            }
+
+            .chat-sidebar {
+                width: 100%;
+                height: 500px; /* Altura fixa para o chat no mobile */
+                border-left: none;
+                border-top: 3px solid #b91212;
+            }
+
+            .video-container {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
+    <header class="live-header">
+        <div class="live-indicator">● AO VIVO</div>
+        <div class="viewers-count">
+            <span id="counter">1.767</span> assistindo agora
+        </div>
+    </header>
+
     <main class="main-content">
-        <header class="live-header">
-            <div class="live-indicator">● AO VIVO</div>
-            <div class="viewers-count">
-                <span id="counter">1.767</span> pessoas acompanhando o voo
-            </div>
-        </header>
+        <h1 class="main-title">Live do Paquetá</h1>
 
         <div class="video-container">
             <div class="video-mask"></div>
             <iframe class="video-player"
                 src="https://www.youtube.com/embed/gJp89wc1lP4?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allow="autoplay; encrypted-media" 
                 allowfullscreen>
             </iframe>
         </div>
 
         <div class="share-row">
-            <a id="shareWa" href="#" target="_blank" class="share-btn btn-wa">WhatsApp</a>
+            <a id="shareWa" href="#" target="_blank" class="share-btn btn-wa">Compartilhar WhatsApp</a>
             <a id="shareTg" href="#" target="_blank" class="share-btn btn-tg">Telegram</a>
         </div>
+        
+        <p style="color: #444; font-size: 12px; margin-bottom: 20px;">Acompanhando o voo em tempo real</p>
     </main>
 
     <aside class="chat-sidebar">
-        <div class="chat-label">CHAT DA NAÇÃO</div>
+        <div class="chat-label">INTERAÇÃO AO VIVO</div>
         <iframe src="https://www3.cbox.ws/box/?boxid=3551867&boxtag=RZm3CI" width="100%" height="100%" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" style="flex: 1;"></iframe>
     </aside>
 
     <script>
-        // Configuração Links de Compartilhamento
+        // Links de Compartilhamento
         const urlPagina = "https://live-do-paqueta.github.io/live-do-Paqueta/";
         const texto = "Acompanhe agora a Live do Paquetá! Voo em tempo real: ";
-        
         document.getElementById('shareWa').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto + urlPagina)}`;
         document.getElementById('shareTg').href = `https://t.me/share/url?url=${encodeURIComponent(urlPagina)}&text=${encodeURIComponent(texto)}`;
 
         // Simulador de Espectadores
-        let viewers = 3767;
-        const counterEl = document.getElementById('counter');
-
-        function updateViewers() {
-            // Sobe entre 1 e 10 pessoas
-            viewers += Math.floor(Math.random() * 10) + 1;
-            counterEl.innerText = viewers.toLocaleString('pt-BR');
-            
-            const nextUpdate = Math.floor(Math.random() * 4000) + 2000;
-            setTimeout(updateViewers, nextUpdate);
-        }
-        updateViewers();
+        let viewers = 2767;
+        setInterval(() => {
+            viewers += Math.floor(Math.random() * 8) + 1;
+            document.getElementById('counter').innerText = viewers.toLocaleString('pt-BR');
+        }, 3000);
     </script>
 </body>
 </html>
