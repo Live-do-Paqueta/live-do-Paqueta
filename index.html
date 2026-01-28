@@ -5,191 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live do Paquetá - Acompanhe o Voo</title>
     <style>
+        /* Reset e Base */
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             padding: 0;
             background-color: #000;
             color: #fff;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Área do Vídeo (Esquerda) */
+        .main-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 50px; /* Espaço para o rodapé */
         }
 
-        /* Header Flamengo */
+        /* Header Rubro-Negro */
         .live-header {
             width: 100%;
-            padding: 15px 0;
-            background: linear-gradient(90deg, #d32f2f 0%, #000000 100%);
-            border-bottom: 3px solid #d32f2f;
-            position: fixed;
+            padding: 12px 20px;
+            background: linear-gradient(90deg, #b91212 0%, #000000 100%);
+            border-bottom: 2px solid #b91212;
+            position: absolute;
             top: 0;
+            left: 0;
             display: flex;
-            justify-content: center;
             align-items: center;
             z-index: 100;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .live-indicator {
             background-color: #ff0000;
-            padding: 4px 10px;
-            border-radius: 3px;
+            padding: 4px 12px;
+            border-radius: 4px;
             font-weight: bold;
             font-size: 13px;
-            margin-right: 12px;
+            margin-right: 15px;
             animation: pulse 1.5s infinite;
+            letter-spacing: 1px;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .viewers-count {
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 500;
+            color: #ddd;
         }
 
-        /* Container do Vídeo Centralizado */
-        .video-wrapper {
+        /* Container do Vídeo */
+        .video-container {
             position: relative;
-            width: 95%;
+            width: 90%;
             max-width: 850px;
             aspect-ratio: 16 / 9;
-            box-shadow: 0 0 40px rgba(211, 47, 47, 0.4);
-            margin-top: 80px;
+            box-shadow: 0 0 40px rgba(185, 18, 18, 0.3);
             background: #000;
-            border: 1px solid #222;
         }
 
-        /* Máscara para esconder o nome do vídeo no topo */
-        .overlay-mask {
+        /* Esconder título do YouTube */
+        .video-mask {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 55px;
+            height: 50px;
             background: black;
-            z-index: 10;
+            z-index: 5;
+            pointer-events: none;
         }
 
-        iframe {
+        iframe.video-player {
             width: 100%;
             height: 100%;
             border: none;
         }
 
         /* Botões de Compartilhamento */
-        .share-section {
+        .share-row {
             margin-top: 30px;
-            text-align: center;
-        }
-
-        .share-title {
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .share-buttons {
             display: flex;
             gap: 15px;
-            justify-content: center;
+            z-index: 10;
         }
 
         .share-btn {
-            padding: 12px 24px;
+            padding: 10px 22px;
             border-radius: 50px;
             text-decoration: none;
             color: white;
             font-weight: bold;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: 0.3s;
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .share-btn:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.1);
+        .btn-wa { background-color: #25d366; }
+        .btn-tg { background-color: #0088cc; }
+        .share-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        /* Barra Lateral (Chat) */
+        .chat-sidebar {
+            width: 350px;
+            height: 100%;
+            background-color: #0a0a0a;
+            border-left: 2px solid #222;
+            display: flex;
+            flex-direction: column;
         }
 
-        .whatsapp { background-color: #25d366; }
-        .telegram { background-color: #0088cc; }
+        .chat-label {
+            padding: 15px;
+            background: #111;
+            color: #b91212;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #222;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
 
-        .footer-tag {
-            margin-top: 40px;
-            color: #444;
-            font-size: 11px;
-            letter-spacing: 3px;
+        /* Responsividade para Celular */
+        @media (max-width: 950px) {
+            body { flex-direction: column; overflow-y: auto; height: auto; }
+            .chat-sidebar { width: 100%; height: 500px; border-left: none; border-top: 2px solid #222; }
+            .main-content { height: 100vh; padding-top: 60px; }
         }
     </style>
 </head>
 <body>
 
-    <header class="live-header">
-        <div class="live-indicator">● AO VIVO</div>
-        <div class="viewers-count">
-            <span id="counter">1767</span> <small>ASSISTINDO</small>
+    <main class="main-content">
+        <header class="live-header">
+            <div class="live-indicator">● AO VIVO</div>
+            <div class="viewers-count">
+                <span id="counter">1.767</span> pessoas acompanhando o voo
+            </div>
+        </header>
+
+        <div class="video-container">
+            <div class="video-mask"></div>
+            <iframe class="video-player"
+                src="https://www.youtube.com/embed/gJp89wc1lP4?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
         </div>
-    </header>
 
-    <div class="video-wrapper">
-        <div class="overlay-mask"></div>
-        <iframe 
-            src="https://www.youtube.com/embed/gJp89wc1lP4?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
-    </div>
-
-    <div class="share-section">
-        <div class="share-title">Convide a Nação para acompanhar:</div>
-        <div class="share-buttons">
-            <a id="btn-wa" href="#" target="_blank" class="share-btn whatsapp">
-                Compartilhar WhatsApp
-            </a>
-            <a id="btn-tg" href="#" target="_blank" class="share-btn telegram">
-                Enviar no Telegram
-            </a>
+        <div class="share-row">
+            <a id="shareWa" href="#" target="_blank" class="share-btn btn-wa">WhatsApp</a>
+            <a id="shareTg" href="#" target="_blank" class="share-btn btn-tg">Telegram</a>
         </div>
-    </div>
+    </main>
 
-    <div class="footer-tag">LIVE DO PAQUETÁ • ACOMPANHE O VOO</div>
+    <aside class="chat-sidebar">
+        <div class="chat-label">CHAT DA NAÇÃO</div>
+        <iframe src="https://www3.cbox.ws/box/?boxid=3551867&boxtag=RZm3CI" width="100%" height="100%" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" style="flex: 1;"></iframe>
+    </aside>
 
     <script>
-        // Configuração dos links de compartilhamento
-        const shareLink = "https://live-do-paqueta.github.io/live-do-Paqueta/";
-        const shareText = "Acompanhe agora a Live do Paquetá! O voo em tempo real: ";
+        // Configuração Links de Compartilhamento
+        const urlPagina = "https://live-do-paqueta.github.io/live-do-Paqueta/";
+        const texto = "Acompanhe agora a Live do Paquetá! Voo em tempo real: ";
+        
+        document.getElementById('shareWa').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto + urlPagina)}`;
+        document.getElementById('shareTg').href = `https://t.me/share/url?url=${encodeURIComponent(urlPagina)}&text=${encodeURIComponent(texto)}`;
 
-        document.getElementById('btn-wa').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + shareLink)}`;
-        document.getElementById('btn-tg').href = `https://t.me/share/url?url=${encodeURIComponent(shareLink)}&text=${encodeURIComponent(shareText)}`;
-
-        // Simulador de Contador de Pessoas
+        // Simulador de Espectadores
         let viewers = 1767;
-        const counterElement = document.getElementById('counter');
+        const counterEl = document.getElementById('counter');
 
         function updateViewers() {
-            // Oscilação realista: aumenta entre 1 e 15 ou diminui levemente às vezes
-            const change = Math.floor(Math.random() * 20) - 2; 
-            viewers += change;
+            // Sobe entre 1 e 10 pessoas
+            viewers += Math.floor(Math.random() * 10) + 1;
+            counterEl.innerText = viewers.toLocaleString('pt-BR');
             
-            if(viewers < 1700) viewers = 1750; // Garante que não caia demais
-
-            counterElement.innerText = viewers.toLocaleString('pt-BR');
-
-            // Atualiza em intervalos aleatórios entre 2 e 5 segundos
-            setTimeout(updateViewers, Math.random() * (5000 - 2000) + 2000);
+            const nextUpdate = Math.floor(Math.random() * 4000) + 2000;
+            setTimeout(updateViewers, nextUpdate);
         }
-
         updateViewers();
     </script>
 </body>
